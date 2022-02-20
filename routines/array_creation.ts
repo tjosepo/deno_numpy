@@ -23,7 +23,7 @@ export function array(
     ndmin?: number;
     /** Reference object to allow the creation of arrays which are not NumPy arrays. If an array-like passed in as like supports the `__array_function__` protocol, the result will be defined by it. In this case, it ensures the creation of an array object compatible with that passed in via this argument. */
     like?: ArrayLike;
-  }
+  },
 ): ndarray {
   const array = np.array(object, ...kwargs(options));
   return new ndarray(array);
@@ -38,7 +38,7 @@ export function zeros(
     order?: "C" | "F";
     /** Reference object to allow the creation of arrays which are not NumPy arrays. If an array-like passed in as like supports the `__array_function__` protocol, the result will be defined by it. In this case, it ensures the creation of an array object compatible with that passed in via this argument. */
     like?: ArrayLike;
-  }
+  },
 ): ndarray {
   const array = np.zeros(shape, ...kwargs(options));
   return new ndarray(array);
@@ -53,7 +53,7 @@ export function empty(
     order?: "C" | "F";
     /** Reference object to allow the creation of arrays which are not NumPy arrays. If an array-like passed in as like supports the `__array_function__` protocol, the result will be defined by it. In this case, it ensures the creation of an array object compatible with that passed in via this argument. */
     like?: ArrayLike;
-  }
+  },
 ): ndarray {
   const array = np.empty(shape, ...kwargs(options));
   return new ndarray(array);
@@ -75,7 +75,7 @@ export function arange(
   start: number,
   stop?: number,
   step?: number,
-  options?: {}
+  options?: {},
 ): ndarray {
   const array = np.arange(start, stop, step, ...kwargs(options));
   return new ndarray(array);

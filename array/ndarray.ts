@@ -122,7 +122,7 @@ export default class ndarray {
     options?: {
       /** Read the elements of a using this index order, and place the elements into the reshaped array using this index order. ‘C’ means to read / write the elements using C-like index order, with the last axis index changing fastest, back to the first axis index changing slowest. ‘F’ means to read / write the elements using Fortran-like index order, with the first index changing fastest, and the last index changing slowest. Note that the ‘C’ and ‘F’ options take no account of the memory layout of the underlying array, and only refer to the order of indexing. ‘A’ means to read / write the elements in Fortran-like index order if a is Fortran contiguous in memory, C-like order otherwise. */
       order?: "C" | "F" | "A";
-    }
+    },
   ): ndarray;
   reshape(row: number, cols: number): ndarray;
   reshape(a: unknown, b: unknown): ndarray {
@@ -140,7 +140,7 @@ export default class ndarray {
     options?: {
       /** If `false`, reference count will not be checked. Default is `true`. */
       refcheck?: boolean;
-    }
+    },
   ): void {
     this.array.resize(newShape, ...kwargs(options));
   }
@@ -184,7 +184,7 @@ export default class ndarray {
        * ‘clip’ mode means that all indices that are too large are replaced by the index that addresses the last element along that axis. Note that this disables indexing with negative numbers.
        */
       mode?: "raise" | "wrap" | "clip";
-    }
+    },
   ): ndarray {
     return new ndarray(this.array.take(indices, ...kwargs(options)));
   }
@@ -204,7 +204,7 @@ export default class ndarray {
        * ‘clip’ mode means that all indices that are too large are replaced by the index that addresses the last element along that axis. Note that this disables indexing with negative numbers.
        */
       mode?: "raise" | "wrap" | "clip";
-    }
+    },
   ): void {
     this.array.put(indices, values, ...kwargs(options));
   }
@@ -215,7 +215,7 @@ export default class ndarray {
     options?: {
       /** The axis along which to repeat values. By default, use the flattened input array, and return a flat output array.*/
       axis?: number;
-    }
+    },
   ): ndarray {
     return new ndarray(this.array.repeat(repeats, ...kwargs(options)));
   }
