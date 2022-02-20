@@ -1,6 +1,6 @@
 import { ArrayLike } from "../shared/types.d.ts";
 import { kwargs } from "../shared/util.ts";
-import ndarray from "../ndarray.ts";
+import ndarray from "../array/ndarray.ts";
 import np from "../shared/numpy.ts";
 
 /**
@@ -25,8 +25,8 @@ export function array(
     like?: ArrayLike;
   }
 ): ndarray {
-  const ndarray = np.array(object, ...kwargs(options));
-  return new ndarray(ndarray);
+  const array = np.array(object, ...kwargs(options));
+  return new ndarray(array);
 }
 
 /** Return a new array of given shape and type, filled with zeros. */
@@ -40,8 +40,8 @@ export function zeros(
     like?: ArrayLike;
   }
 ): ndarray {
-  const ndarray = np.zeros(shape, ...kwargs(options));
-  return new ndarray(ndarray);
+  const array = np.zeros(shape, ...kwargs(options));
+  return new ndarray(array);
 }
 
 /** Return a new array of given shape and type, without initializing entries. */
@@ -55,8 +55,8 @@ export function empty(
     like?: ArrayLike;
   }
 ): ndarray {
-  const ndarray = np.empty(shape, ...kwargs(options));
-  return new ndarray(ndarray);
+  const array = np.empty(shape, ...kwargs(options));
+  return new ndarray(array);
 }
 
 /**
@@ -77,6 +77,6 @@ export function arange(
   step?: number,
   options?: {}
 ): ndarray {
-  const ndarray = np.arange(start, stop, step, ...kwargs(options));
-  return new ndarray(ndarray);
+  const array = np.arange(start, stop, step, ...kwargs(options));
+  return new ndarray(array);
 }

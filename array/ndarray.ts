@@ -1,19 +1,19 @@
-import { kwargs } from "./shared/util.ts";
-import { ArrayLike } from "./shared/types.d.ts";
+import { kwargs } from "../shared/util.ts";
+import { ArrayLike } from "../shared/types.d.ts";
 
 /**
  * Represents a Numpy ndarray.
  *
- * The actual Python object can be accessed form the property `ndarray`.
+ * The actual Python object can be accessed form the property `array`.
  */
 export default class ndarray {
-  constructor(public ndarray: any) {}
+  constructor(public array: any) {}
 
   /** Performs a Python operator overloading. */
   #overload(other: unknown, method: string): ndarray {
     return other instanceof ndarray
-      ? new ndarray(this.ndarray[method](other.ndarray))
-      : new ndarray(this.ndarray[method](other));
+      ? new ndarray(this.array[method](other.array))
+      : new ndarray(this.array[method](other));
   }
 
   /**
@@ -21,8 +21,12 @@ export default class ndarray {
    *
    * The shape property is usually used to get the current shape of an array, but may also be used to reshape the array in-place by assigning a tuple of array dimensions to it. As with numpy.reshape, one of the new shape dimensions can be -1, in which case its value is inferred from the size of the array and the remaining dimensions. Reshaping an array in-place will fail if a copy is required.
    */
-  get shape(): number {
-    return this.ndarray.shape.valueOf();
+  get shape(): number[] {
+    return this.array.shape.valueOf();
+  }
+
+  set shape(shape: number[]) {
+    this.array.shape = shape;
   }
 
   /**
@@ -31,12 +35,12 @@ export default class ndarray {
    * Equal to `np.prod(a.shape)`, i.e., the product of the array’s dimensions.
    */
   get size(): number {
-    return this.ndarray.size.valueOf();
+    return this.array.size.valueOf();
   }
 
   /** Total bytes consumed by the elements of the array. */
   get nbytes(): number {
-    return this.ndarray.nbytes.valueOf();
+    return this.array.nbytes.valueOf();
   }
 
   /**
@@ -80,8 +84,8 @@ export default class ndarray {
   /** Copy an element of an array to a standard JavaScript object and return it. */
   item<T = number>(args?: number | number[]): T {
     return Array.isArray(args)
-      ? this.ndarray.item(...args).valueOf()
-      : this.ndarray.item(args).valueOf();
+      ? this.array.item(...args).valueOf()
+      : this.array.item(args).valueOf();
   }
 
   /**
@@ -91,8 +95,8 @@ export default class ndarray {
    *
    * If `a.ndim` is 0, then since the depth of the nested list is 0, it will not be a list at all, but a simple JavaScript object.
    */
-  toList<T = number[]>(): T {
-    return this.ndarray.tolist().valueOf();
+  toList<T = any>(): T {
+    return this.array.tolist().valueOf();
   }
 
   /** Return a copy of the array. */
@@ -100,7 +104,12 @@ export default class ndarray {
     /** Controls the memory layout of the copy. ‘C’ means C-order, ‘F’ means F-order, ‘A’ means ‘F’ if a is Fortran contiguous, ‘C’ otherwise. ‘K’ means match the layout of a as closely as possible. (Note that this function and `numpy.copy` are very similar but have different default values for their order= arguments, and this function always passes sub-classes through.) */
     order?: "C" | "F" | "A" | "K";
   }): ndarray {
-    return new ndarray(this.ndarray.copy(...kwargs(options)));
+    return new ndarray(this.array.copy(...kwargs(options)));
+  }
+
+  /** Fill the array with a scalar value. */
+  fill(value: unknown): void {
+    this.array.fill(value);
   }
 
   /**
@@ -118,11 +127,11 @@ export default class ndarray {
   reshape(row: number, cols: number): ndarray;
   reshape(a: unknown, b: unknown): ndarray {
     if (b && typeof b === "object") {
-      return new ndarray(this.ndarray.reshape(a, ...kwargs(b)));
+      return new ndarray(this.array.reshape(a, ...kwargs(b)));
     } else if (typeof b === "number") {
-      return new ndarray(this.ndarray.reshape(a, b));
+      return new ndarray(this.array.reshape(a, b));
     }
-    return new ndarray(this.ndarray.reshape(a));
+    return new ndarray(this.array.reshape(a));
   }
 
   /** Change shape and size of array in-place. */
@@ -133,15 +142,20 @@ export default class ndarray {
       refcheck?: boolean;
     }
   ): void {
-    this.ndarray.resize(newShape, ...kwargs(options));
+    this.array.resize(newShape, ...kwargs(options));
   }
 
   /** Returns a view of the array with axes transposed. */
   transpose(): ndarray;
   transpose(...axes: number[]): ndarray {
     return axes
-      ? new ndarray(this.ndarray.transpose(...axes))
-      : new ndarray(this.ndarray.transpose());
+      ? new ndarray(this.array.transpose(...axes))
+      : new ndarray(this.array.transpose());
+  }
+
+  /** Return a view of the array with axis1 and axis2 interchanged. */
+  swapaxes(axis1: number, axis2: number): ndarray {
+    return new ndarray(this.array.swapaxes(axis1, axis2));
   }
 
   /** Return a copy of the array collapsed into one dimension. */
@@ -149,7 +163,61 @@ export default class ndarray {
     /** ‘C’ means to flatten in row-major (C-style) order. ‘F’ means to flatten in column-major (Fortran- style) order. ‘A’ means to flatten in column-major order if a is Fortran contiguous in memory, row-major order otherwise. ‘K’ means to flatten a in the order the elements occur in memory. The default is ‘C’. */
     order?: "C" | "F" | "A" | "K";
   }): ndarray {
-    return new ndarray(this.ndarray.flatten(...kwargs(options)));
+    return new ndarray(this.array.flatten(...kwargs(options)));
+  }
+
+  /** Return an array formed from the elements of _a_ at the given indices. */
+  take(
+    indices: number | number[] | number[][],
+    options?: {
+      /** The axis over which to select values. By default, the flattened input array is used. */
+      axis?: number;
+      /** If provided, the result will be placed in this array. It should be of the appropriate shape and dtype. Note that _out_ is always buffered if _mode=’raise’_; use other modes for better performance. */
+      out?: any;
+      /**
+       * Specifies how out-of-bounds indices will behave.
+       *
+       * - ‘raise’ – raise an error (default)
+       * - ‘wrap’ – wrap around
+       * - ‘clip’ – clip to the range
+       *
+       * ‘clip’ mode means that all indices that are too large are replaced by the index that addresses the last element along that axis. Note that this disables indexing with negative numbers.
+       */
+      mode?: "raise" | "wrap" | "clip";
+    }
+  ): ndarray {
+    return new ndarray(this.array.take(indices, ...kwargs(options)));
+  }
+
+  /** Replaces specified elements of an array with given values. */
+  put(
+    indices: number | number[] | number[][],
+    values: number | number[] | number[][],
+    options?: {
+      /**
+       * Specifies how out-of-bounds indices will behave.
+       *
+       * - ‘raise’ – raise an error (default)
+       * - ‘wrap’ – wrap around
+       * - ‘clip’ – clip to the range
+       *
+       * ‘clip’ mode means that all indices that are too large are replaced by the index that addresses the last element along that axis. Note that this disables indexing with negative numbers.
+       */
+      mode?: "raise" | "wrap" | "clip";
+    }
+  ): void {
+    this.array.put(indices, values, ...kwargs(options));
+  }
+
+  /** Repeat elements of an array. */
+  repeat(
+    repeats: number | number[],
+    options?: {
+      /** The axis along which to repeat values. By default, use the flattened input array, and return a flat output array.*/
+      axis?: number;
+    }
+  ): ndarray {
+    return new ndarray(this.array.repeat(repeats, ...kwargs(options)));
   }
 
   /** Sort an array in-place. Refer to `numpy.sort` for full documentation. */
@@ -161,7 +229,7 @@ export default class ndarray {
     /** When _a_ is an array with fields defined, this argument specifies which fields to compare first, second, etc. A single field can be specified as a string, and not all fields need be specified, but unspecified fields will still be used, in the order in which they come up in the dtype, to break ties. */
     order?: string | string[];
   }): void {
-    this.ndarray.sort(...kwargs(options));
+    this.array.sort(...kwargs(options));
   }
 
   /** Return the maximum along a given axis. */
@@ -181,6 +249,49 @@ export default class ndarray {
     /** Elements to compare for the maximum. See reduce for details. */
     where?: boolean[] | ndarray;
   }): number | ndarray {
-    return this.ndarray.max(...kwargs(options));
+    const result = new ndarray(this.array.max(...kwargs(options)));
+    return options?.axis !== undefined ? result : result.item(0);
+  }
+
+  /** Return the minimum along a given axis. */
+  min(options?: {
+    /** Axis or axes along which to operate. By default, flattened input is used. */
+    axis?: number | number[];
+    /** Alternative output array in which to place the result. Must be of the same shape and buffer length as the expected output. See Output type determination for more details. */
+    out?: any;
+    /**
+     * If this is set to `true`, the axes which are reduced are left in the result as dimensions with size one. With this option, the result will broadcast correctly against the input array.
+     *
+     * If the default value is passed, then keepdims will not be passed through to the amax method of sub-classes of ndarray, however any non-default value will be. If the sub-class’ method does not implement keepdims any exceptions will be raised.
+     */
+    keepdims?: boolean;
+    /** The minimum value of an output element. Must be present to allow computation on empty slice. See reduce for details. */
+    initial?: number;
+    /** Elements to compare for the maximum. See reduce for details. */
+    where?: boolean[] | ndarray;
+  }): number | ndarray {
+    const result = new ndarray(this.array.min(...kwargs(options)));
+    return options?.axis !== undefined ? result : result.item(0);
+  }
+
+  /** Return the sum of the array elements over the given axis. */
+  sum(options?: {
+    /** Axis or axes along which to operate. By default, flattened input is used. */
+    axis?: number | number[];
+    /** Alternative output array in which to place the result. Must be of the same shape and buffer length as the expected output. See Output type determination for more details. */
+    out?: any;
+    /**
+     * If this is set to `true`, the axes which are reduced are left in the result as dimensions with size one. With this option, the result will broadcast correctly against the input array.
+     *
+     * If the default value is passed, then keepdims will not be passed through to the amax method of sub-classes of ndarray, however any non-default value will be. If the sub-class’ method does not implement keepdims any exceptions will be raised.
+     */
+    keepdims?: boolean;
+    /** The minimum value of an output element. Must be present to allow computation on empty slice. See reduce for details. */
+    initial?: number;
+    /** Elements to compare for the maximum. See reduce for details. */
+    where?: boolean[] | ndarray;
+  }): number | ndarray {
+    const result = new ndarray(this.array.sum(...kwargs(options)));
+    return options?.axis !== undefined ? result : result.item(0);
   }
 }
