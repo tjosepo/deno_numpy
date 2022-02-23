@@ -1,4 +1,4 @@
-import { python, PythonError } from "../deps.ts";
+import { python, PythonError } from "../../deps.ts";
 
 let numpy: any;
 

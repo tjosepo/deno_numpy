@@ -1,4 +1,4 @@
-import { assertEquals } from "../deps_test.ts";
+import { assertEquals } from "../../deps_test.ts";
 import np from "../mod.ts";
 
 Deno.test("array", () => {

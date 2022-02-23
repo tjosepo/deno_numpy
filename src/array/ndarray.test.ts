@@ -1,4 +1,4 @@
-import { assert, assertEquals, assertThrows } from "../deps_test.ts";
+import { assert, assertEquals, assertThrows } from "../../deps_test.ts";
 import np, { ndarray } from "../mod.ts";
 
 Deno.test("ndarray.shape", () => {
