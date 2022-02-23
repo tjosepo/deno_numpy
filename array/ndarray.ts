@@ -69,6 +69,10 @@ export default class ndarray {
     return this.#overload(value, "__mul__");
   }
 
+  mod(value: number | ArrayLike): ndarray {
+    return this.#overload(value, "__mod__");
+  }
+
   pow(value: number): ndarray {
     return this.#overload(value, "__pow__");
   }
