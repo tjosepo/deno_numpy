@@ -1,7 +1,2 @@
-import * as creation from "./array_creation.ts";
-import * as manipulation from "./array_manipulation.ts";
-
-export default {
-  ...creation,
-  ...manipulation,
-};
+export * from "./array_creation.ts";
+export * from "./array_manipulation.ts";

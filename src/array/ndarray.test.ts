@@ -1,5 +1,5 @@
 import { assert, assertEquals, assertThrows } from "../../deps_test.ts";
-import np, { ndarray } from "../mod.ts";
+import np, { ndarray } from "../../mod.ts";
 
 Deno.test("ndarray.shape", () => {
   const x = np.array([1, 2, 3, 4]);
