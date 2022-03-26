@@ -1,3 +1,5 @@
+[![Tests](https://github.com/tjosepo/deno_numpy/actions/workflows/tests.yml/badge.svg)](https://github.com/tjosepo/deno_numpy/actions/workflows/tests.yml)
+
 # deno_numpy
 
 Deno bindings for [Numpy](https://numpy.org/), the fundamental package for
