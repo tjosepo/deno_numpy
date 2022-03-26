@@ -1,3 +1,15 @@
-import ndarray from "../array/ndarray.ts";
+import { TypeStr } from "../array/array_interface.ts";
+import type ndarray from "../array/ndarray.ts";
 
-export type ArrayLike = number[] | number[][] | ndarray;
+// deno-lint-ignore no-empty-interface
+export interface Scalar {}
+
+export type ArrayLike =
+  | ndarray
+  | number
+  | boolean
+  | string
+  | Scalar
+  | ArrayLike[];
+
+export type DataType = TypeStr | Scalar;

@@ -23,6 +23,14 @@ Deno.test("ndarray.size", () => {
   assertEquals(x.size, 30);
 });
 
+Deno.test("ndarray.dtype", () => {
+  const x = np.array([
+    [0, 1],
+    [2, 3],
+  ]);
+  assertEquals(x.dtype.kind, "i");
+});
+
 Deno.test("ndarray.T", () => {
   let x = np.array([
     [1, 2],
@@ -209,6 +217,7 @@ Deno.test("ndarray.sort", () => {
 
 Deno.test("ndarray.max", () => {
   const a = np.arange(4).reshape([2, 2]);
+
   assertEquals(a.max(), 3);
   assertEquals((a.max({ axis: 0 }) as ndarray).toList(), [2, 3]);
 });

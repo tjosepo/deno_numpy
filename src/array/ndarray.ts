@@ -1,5 +1,6 @@
 import { kwargs } from "../shared/util.ts";
-import { ArrayLike } from "../shared/types.d.ts";
+import type { ArrayLike } from "../shared/types.d.ts";
+import dtype from "./dtype.ts";
 
 /**
  * Represents a Numpy ndarray.
@@ -10,7 +11,7 @@ export default class ndarray {
   constructor(public array: any) {}
 
   /** Performs a Python operator overloading. */
-  #overload(other: unknown, method: string): ndarray {
+  #overload(other: unknown, method: `__${string}__`): ndarray {
     return other instanceof ndarray
       ? new ndarray(this.array[method](other.array))
       : new ndarray(this.array[method](other));
@@ -43,6 +44,11 @@ export default class ndarray {
     return this.array.nbytes.valueOf();
   }
 
+  /** Data-type of the array’s elements. */
+  get dtype(): dtype {
+    return new dtype(this.array.dtype);
+  }
+
   /**
    * The transposed array.
    *
@@ -52,7 +58,6 @@ export default class ndarray {
     return this.transpose();
   }
 
-  /** A 1-D iterator over the array. */
   get flat(): number[] {
     return this.flatten().toList();
   }
@@ -77,8 +82,18 @@ export default class ndarray {
     return this.#overload(value, "__pow__");
   }
 
+  /** Return self > value */
+  gt(value: number): ndarray {
+    return this.#overload(value, "__gt__");
+  }
+
+  /** Return self < value */
   lt(value: number): ndarray {
     return this.#overload(value, "__lt__");
+  }
+
+  getItem(value: ArrayLike): ndarray {
+    return this.#overload(value, "__getitem__");
   }
 
   dot(value: ArrayLike): ndarray {
