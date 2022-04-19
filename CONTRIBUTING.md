@@ -24,13 +24,3 @@ Numpy's API is very large. Because of this, only a subset of features have been
 completed. Visit https://numpy.org/doc/stable/reference/index.html to find what
 is missing. This codebase attempts to copy the structure of the Numpy
 documentation. 
-
-## Roadmap
-
-Things to prioritize:
-
-[] finish `numpy.ndarray`
-[] finish constants
-[] finish sorting routines
-[] finish array creation routines
-[] finish array manipulation routines
