@@ -1,4 +1,4 @@
-import { ArrayLike, DataType } from "../shared/types.d.ts";
+import { ArrayLike, DataType } from "../types.d.ts";
 import { kwargs } from "../shared/util.ts";
 import ndarray from "../array/ndarray.ts";
 import np from "../shared/numpy.ts";
@@ -72,13 +72,49 @@ export function empty(
  * @returns Array of evenly spaced values.
  */
 export function arange(
+  stop: number,
+  options?: {
+    dtype?: DataType;
+  },
+): ndarray;
+export function arange(
   start: number,
-  stop?: number,
-  step?: number,
-  options?: {},
+  stop: number,
+  options?: {
+    dtype?: DataType;
+  },
+): ndarray;
+export function arange(
+  start: number,
+  stop: number,
+  step: number,
+  options?: {
+    dtype?: DataType;
+  },
+): ndarray;
+export function arange(
+  start: number,
+  stop?:
+    | number
+    | {
+      dtype?: DataType;
+    },
+  step?:
+    | number
+    | {
+      dtype?: DataType;
+    },
+  options?: {
+    dtype?: DataType;
+  },
 ): ndarray {
-  const array = np.arange(start, stop, step, ...kwargs(options));
-  return new ndarray(array);
+  if (typeof stop === "number" && typeof step === "number") {
+    return new ndarray(np.arange(start, stop, step, ...kwargs(options)));
+  }
+  if (typeof stop === "number") {
+    return new ndarray(np.arange(start, stop, ...kwargs(options)));
+  }
+  return new ndarray(np.arange(start, ...kwargs(options)));
 }
 
 /**

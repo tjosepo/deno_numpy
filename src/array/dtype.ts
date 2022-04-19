@@ -1,6 +1,6 @@
 import { kwargs } from "../shared/util.ts";
 import np from "../shared/numpy.ts";
-import { DataType } from "../shared/types.d.ts";
+import { DataType } from "../types.d.ts";
 
 /**
  * Create a data type object.
@@ -24,6 +24,7 @@ function initDtype(
 export { initDtype as dtype };
 
 export default class dtype {
+  // deno-lint-ignore no-explicit-any
   constructor(public dtype: any) {}
 
   /** A character code (one of ‘biufcmMOSUV’) identifying the general kind of data. */

@@ -1,5 +1,5 @@
 import { kwargs } from "../shared/util.ts";
-import type { ArrayLike } from "../shared/types.d.ts";
+import type { ArrayLike } from "../types.d.ts";
 import dtype from "./dtype.ts";
 
 /**
@@ -8,6 +8,7 @@ import dtype from "./dtype.ts";
  * The actual Python object can be accessed form the property `array`.
  */
 export default class ndarray {
+  // deno-lint-ignore no-explicit-any
   constructor(public array: any) {}
 
   /** Performs a Python operator overloading. */
@@ -70,11 +71,11 @@ export default class ndarray {
     return this.#overload(value, "__sub__");
   }
 
-  mul(value: number | ArrayLike): ndarray {
+  mul(value: ArrayLike): ndarray {
     return this.#overload(value, "__mul__");
   }
 
-  mod(value: number | ArrayLike): ndarray {
+  mod(value: ArrayLike): ndarray {
     return this.#overload(value, "__mod__");
   }
 
@@ -114,6 +115,7 @@ export default class ndarray {
    *
    * If `a.ndim` is 0, then since the depth of the nested list is 0, it will not be a list at all, but a simple JavaScript object.
    */
+  // deno-lint-ignore no-explicit-any
   toList<T = any>(): T {
     return this.array.tolist().valueOf();
   }
@@ -192,7 +194,7 @@ export default class ndarray {
       /** The axis over which to select values. By default, the flattened input array is used. */
       axis?: number;
       /** If provided, the result will be placed in this array. It should be of the appropriate shape and dtype. Note that _out_ is always buffered if _mode=’raise’_; use other modes for better performance. */
-      out?: any;
+      out?: unknown;
       /**
        * Specifies how out-of-bounds indices will behave.
        *
@@ -277,7 +279,7 @@ export default class ndarray {
     /** Axis or axes along which to operate. By default, flattened input is used. */
     axis?: number | number[];
     /** Alternative output array in which to place the result. Must be of the same shape and buffer length as the expected output. See Output type determination for more details. */
-    out?: any;
+    out?: unknown;
     /**
      * If this is set to `true`, the axes which are reduced are left in the result as dimensions with size one. With this option, the result will broadcast correctly against the input array.
      *
@@ -298,7 +300,7 @@ export default class ndarray {
     /** Axis or axes along which to operate. By default, flattened input is used. */
     axis?: number | number[];
     /** Alternative output array in which to place the result. Must be of the same shape and buffer length as the expected output. See Output type determination for more details. */
-    out?: any;
+    out?: unknown;
     /**
      * If this is set to `true`, the axes which are reduced are left in the result as dimensions with size one. With this option, the result will broadcast correctly against the input array.
      *

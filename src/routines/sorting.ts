@@ -1,5 +1,4 @@
-import { ArrayLike } from "../shared/types.d.ts";
-import { kwargs } from "../shared/util.ts";
+import { ArrayLike } from "../types.d.ts";
 import ndarray from "../array/ndarray.ts";
 import np from "../shared/numpy.ts";
 

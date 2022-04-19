@@ -31,5 +31,5 @@ jobs:
       - name: Install NumPy
         run: python3 -m pip install numpy
 
-      - name: Run tests
-        run: deno test --allow-all --unstable
+      - name: Run CI
+        run: deno task test:ci
