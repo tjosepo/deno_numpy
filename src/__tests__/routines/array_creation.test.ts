@@ -1,5 +1,5 @@
-import { assertEquals } from "../../deps_test.ts";
-import np from "../../mod.ts";
+import { assertEquals } from "../../../deps_test.ts";
+import np from "../../../mod.ts";
 
 Deno.test("numpy.array", () => {
   const a = np.array([

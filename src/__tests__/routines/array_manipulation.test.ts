@@ -1,5 +1,5 @@
-import { assertEquals } from "../../deps_test.ts";
-import np from "../../mod.ts";
+import { assertEquals } from "../../../deps_test.ts";
+import np from "../../../mod.ts";
 
 Deno.test("numpy.unique", () => {
   assertEquals(np.unique([1, 1, 2, 2, 3, 3]).toList(), [1, 2, 3]);
@@ -10,7 +10,7 @@ Deno.test("numpy.unique", () => {
         [2, 3],
       ])
       .toList(),
-    [1, 2, 3],
+    [1, 2, 3]
   );
 
   let a = np.array([

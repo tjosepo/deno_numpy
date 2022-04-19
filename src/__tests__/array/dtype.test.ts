@@ -1,5 +1,5 @@
-import { assertEquals } from "../../deps_test.ts";
-import np from "../../mod.ts";
+import { assertEquals } from "../../../deps_test.ts";
+import np from "../../../mod.ts";
 
 Deno.test("dtype.kind", () => {
   let dt = np.dtype("i");

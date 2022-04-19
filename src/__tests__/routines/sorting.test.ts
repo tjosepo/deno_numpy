@@ -1,5 +1,5 @@
-import { assertEquals } from "../../deps_test.ts";
-import np, { ndarray } from "../../mod.ts";
+import { assertEquals } from "../../../deps_test.ts";
+import np, { ndarray } from "../../../mod.ts";
 
 Deno.test("numpy.where", () => {
   const grades = np.array([1, 3, 4, 2, 5, 5]);

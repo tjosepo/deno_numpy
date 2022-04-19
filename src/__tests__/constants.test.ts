@@ -1,5 +1,5 @@
-import { assert } from "../deps_test.ts";
-import np from "../mod.ts";
+import { assert } from "../../deps_test.ts";
+import np from "../../mod.ts";
 
 Deno.test("numpy.e", () => {
   const e = np.e;
