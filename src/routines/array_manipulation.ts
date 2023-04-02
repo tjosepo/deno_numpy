@@ -5,9 +5,7 @@ import { kwargs } from "../shared/util.ts";
 
 /** Return the shape of an array. */
 export function shape(a: ArrayLike): number[] {
-  return a instanceof ndarray
-    ? np.shape(a.array).valueOf()
-    : np.shape(a).valueOf();
+  return np.shape(a).valueOf();
 }
 
 /**
@@ -34,7 +32,5 @@ export function unique(
     axis?: number | null;
   },
 ): ndarray {
-  return new ndarray(
-    np.unique(ar instanceof ndarray ? ar.array : ar, ...kwargs(options)),
-  );
+  return new ndarray(np.unique(ar, ...kwargs(options)));
 }

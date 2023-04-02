@@ -10,7 +10,7 @@ Deno.test("numpy.unique", () => {
         [2, 3],
       ])
       .toList(),
-    [1, 2, 3]
+    [1, 2, 3],
   );
 
   let a = np.array([

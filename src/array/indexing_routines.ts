@@ -24,10 +24,5 @@ export function put(
     mode?: "raise" | "wrap" | "clip";
   },
 ): void {
-  np.put(
-    a.array,
-    ind instanceof ndarray ? ind.array : ind,
-    v instanceof ndarray ? v.array : v,
-    ...kwargs(options),
-  );
+  np.put(a, ind, v, ...kwargs(options));
 }

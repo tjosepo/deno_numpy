@@ -1,3 +1,4 @@
+import { ProxiedPyObject, PythonProxy } from "../../deps.ts";
 import { kwargs } from "../shared/util.ts";
 import type { ArrayLike } from "../types.d.ts";
 import dtype from "./dtype.ts";
@@ -5,17 +6,28 @@ import dtype from "./dtype.ts";
 /**
  * Represents a Numpy ndarray.
  *
- * The actual Python object can be accessed form the property `array`.
+ * The actual Python object can be accessed from the symbol `[ProxiedPyObject]`.
  */
-export default class ndarray {
+export default class ndarray implements PythonProxy {
   // deno-lint-ignore no-explicit-any
-  constructor(public array: any) {}
+  #array: any;
+
+  // deno-lint-ignore no-explicit-any
+  constructor(array: any) {
+    this.#array = array;
+  }
+
+  get [ProxiedPyObject]() {
+    return this.#array[ProxiedPyObject];
+  }
+
+  [Symbol.for("Deno.customInspect")]() {
+    return `array(${this.#array})`;
+  }
 
   /** Performs a Python operator overloading. */
   #overload(other: unknown, method: `__${string}__`): ndarray {
-    return other instanceof ndarray
-      ? new ndarray(this.array[method](other.array))
-      : new ndarray(this.array[method](other));
+    return new ndarray(this.#array[method](other));
   }
 
   /**
@@ -24,11 +36,11 @@ export default class ndarray {
    * The shape property is usually used to get the current shape of an array, but may also be used to reshape the array in-place by assigning a tuple of array dimensions to it. As with numpy.reshape, one of the new shape dimensions can be -1, in which case its value is inferred from the size of the array and the remaining dimensions. Reshaping an array in-place will fail if a copy is required.
    */
   get shape(): number[] {
-    return this.array.shape.valueOf();
+    return this.#array.shape.valueOf();
   }
 
   set shape(shape: number[]) {
-    this.array.shape = shape;
+    this.#array.shape = shape;
   }
 
   /**
@@ -37,17 +49,17 @@ export default class ndarray {
    * Equal to `np.prod(a.shape)`, i.e., the product of the array’s dimensions.
    */
   get size(): number {
-    return this.array.size.valueOf();
+    return this.#array.size.valueOf();
   }
 
   /** Total bytes consumed by the elements of the array. */
   get nbytes(): number {
-    return this.array.nbytes.valueOf();
+    return this.#array.nbytes.valueOf();
   }
 
   /** Data-type of the array’s elements. */
   get dtype(): dtype {
-    return new dtype(this.array.dtype);
+    return new dtype(this.#array.dtype);
   }
 
   /**
@@ -104,8 +116,8 @@ export default class ndarray {
   /** Copy an element of an array to a standard JavaScript object and return it. */
   item<T = number>(args?: number | number[]): T {
     return Array.isArray(args)
-      ? this.array.item(...args).valueOf()
-      : this.array.item(args).valueOf();
+      ? this.#array.item(...args).valueOf()
+      : this.#array.item(args).valueOf();
   }
 
   /**
@@ -117,7 +129,7 @@ export default class ndarray {
    */
   // deno-lint-ignore no-explicit-any
   toList<T = any>(): T {
-    return this.array.tolist().valueOf();
+    return this.#array.tolist().valueOf();
   }
 
   /** Return a copy of the array. */
@@ -125,12 +137,12 @@ export default class ndarray {
     /** Controls the memory layout of the copy. ‘C’ means C-order, ‘F’ means F-order, ‘A’ means ‘F’ if a is Fortran contiguous, ‘C’ otherwise. ‘K’ means match the layout of a as closely as possible. (Note that this function and `numpy.copy` are very similar but have different default values for their order= arguments, and this function always passes sub-classes through.) */
     order?: "C" | "F" | "A" | "K";
   }): ndarray {
-    return new ndarray(this.array.copy(...kwargs(options)));
+    return new ndarray(this.#array.copy(...kwargs(options)));
   }
 
   /** Fill the array with a scalar value. */
   fill(value: unknown): void {
-    this.array.fill(value);
+    this.#array.fill(value);
   }
 
   /**
@@ -148,11 +160,11 @@ export default class ndarray {
   reshape(row: number, cols: number): ndarray;
   reshape(a: unknown, b: unknown): ndarray {
     if (b && typeof b === "object") {
-      return new ndarray(this.array.reshape(a, ...kwargs(b)));
+      return new ndarray(this.#array.reshape(a, ...kwargs(b)));
     } else if (typeof b === "number") {
-      return new ndarray(this.array.reshape(a, b));
+      return new ndarray(this.#array.reshape(a, b));
     }
-    return new ndarray(this.array.reshape(a));
+    return new ndarray(this.#array.reshape(a));
   }
 
   /** Change shape and size of array in-place. */
@@ -163,20 +175,20 @@ export default class ndarray {
       refcheck?: boolean;
     },
   ): void {
-    this.array.resize(newShape, ...kwargs(options));
+    this.#array.resize(newShape, ...kwargs(options));
   }
 
   /** Returns a view of the array with axes transposed. */
   transpose(): ndarray;
   transpose(...axes: number[]): ndarray {
     return axes
-      ? new ndarray(this.array.transpose(...axes))
-      : new ndarray(this.array.transpose());
+      ? new ndarray(this.#array.transpose(...axes))
+      : new ndarray(this.#array.transpose());
   }
 
   /** Return a view of the array with axis1 and axis2 interchanged. */
   swapaxes(axis1: number, axis2: number): ndarray {
-    return new ndarray(this.array.swapaxes(axis1, axis2));
+    return new ndarray(this.#array.swapaxes(axis1, axis2));
   }
 
   /** Return a copy of the array collapsed into one dimension. */
@@ -184,7 +196,7 @@ export default class ndarray {
     /** ‘C’ means to flatten in row-major (C-style) order. ‘F’ means to flatten in column-major (Fortran- style) order. ‘A’ means to flatten in column-major order if a is Fortran contiguous in memory, row-major order otherwise. ‘K’ means to flatten a in the order the elements occur in memory. The default is ‘C’. */
     order?: "C" | "F" | "A" | "K";
   }): ndarray {
-    return new ndarray(this.array.flatten(...kwargs(options)));
+    return new ndarray(this.#array.flatten(...kwargs(options)));
   }
 
   /** Return an array formed from the elements of _a_ at the given indices. */
@@ -207,7 +219,7 @@ export default class ndarray {
       mode?: "raise" | "wrap" | "clip";
     },
   ): ndarray {
-    return new ndarray(this.array.take(indices, ...kwargs(options)));
+    return new ndarray(this.#array.take(indices, ...kwargs(options)));
   }
 
   /** Replaces specified elements of an array with given values. */
@@ -227,7 +239,7 @@ export default class ndarray {
       mode?: "raise" | "wrap" | "clip";
     },
   ): void {
-    this.array.put(indices, values, ...kwargs(options));
+    this.#array.put(indices, values, ...kwargs(options));
   }
 
   /** Repeat elements of an array. */
@@ -238,7 +250,7 @@ export default class ndarray {
       axis?: number;
     },
   ): ndarray {
-    return new ndarray(this.array.repeat(repeats, ...kwargs(options)));
+    return new ndarray(this.#array.repeat(repeats, ...kwargs(options)));
   }
 
   /** Sort an array in-place. Refer to `numpy.sort` for full documentation. */
@@ -250,7 +262,7 @@ export default class ndarray {
     /** When _a_ is an array with fields defined, this argument specifies which fields to compare first, second, etc. A single field can be specified as a string, and not all fields need be specified, but unspecified fields will still be used, in the order in which they come up in the dtype, to break ties. */
     order?: string | string[];
   }): void {
-    this.array.sort(...kwargs(options));
+    this.#array.sort(...kwargs(options));
   }
 
   /** Return the maximum along a given axis. */
@@ -270,7 +282,7 @@ export default class ndarray {
     /** Elements to compare for the maximum. See reduce for details. */
     where?: boolean[] | ndarray;
   }): number | ndarray {
-    const result = new ndarray(this.array.max(...kwargs(options)));
+    const result = new ndarray(this.#array.max(...kwargs(options)));
     return options?.axis !== undefined ? result : result.item(0);
   }
 
@@ -291,7 +303,7 @@ export default class ndarray {
     /** Elements to compare for the maximum. See reduce for details. */
     where?: boolean[] | ndarray;
   }): number | ndarray {
-    const result = new ndarray(this.array.min(...kwargs(options)));
+    const result = new ndarray(this.#array.min(...kwargs(options)));
     return options?.axis !== undefined ? result : result.item(0);
   }
 
@@ -312,7 +324,7 @@ export default class ndarray {
     /** Elements to compare for the maximum. See reduce for details. */
     where?: boolean[] | ndarray;
   }): number | ndarray {
-    const result = new ndarray(this.array.sum(...kwargs(options)));
+    const result = new ndarray(this.#array.sum(...kwargs(options)));
     return options?.axis !== undefined ? result : result.item(0);
   }
 }
