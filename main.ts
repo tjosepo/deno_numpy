@@ -1,4 +1,4 @@
-import np from "./mod.ts";
+import np from "https://deno.land/x/numpy@0.2.0/mod.ts";
 
 const x = np.arange(15, { dtype: np.int64 }).reshape(3, 5);
 np.put(x, np.arange(5, 15, 2), -99);
