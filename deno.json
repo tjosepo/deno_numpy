@@ -1,6 +1,6 @@
 {
   "tasks": {
-    "test": "deno test --allow-env --allow-ffi --allow-read --allow-run --unstable --watch",
-    "test:ci": "deno lint && deno test --allow-env --allow-ffi --allow-read --allow-run --unstable"
+    "test": "deno test --allow-env --allow-ffi --allow-read --allow-run --unstable --watch .",
+    "test:ci": "deno lint && deno test --allow-env --allow-ffi --allow-read --allow-run --unstable ."
   }
 }

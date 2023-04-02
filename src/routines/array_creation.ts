@@ -23,7 +23,7 @@ export function array(
     ndmin?: number;
     /** Reference object to allow the creation of arrays which are not NumPy arrays. If an array-like passed in as like supports the `__array_function__` protocol, the result will be defined by it. In this case, it ensures the creation of an array object compatible with that passed in via this argument. */
     like?: ArrayLike;
-  }
+  },
 ): ndarray {
   const array = np.array(object, ...kwargs(options));
   return new ndarray(array);
@@ -38,7 +38,7 @@ export function zeros(
     order?: "C" | "F";
     /** Reference object to allow the creation of arrays which are not NumPy arrays. If an array-like passed in as like supports the `__array_function__` protocol, the result will be defined by it. In this case, it ensures the creation of an array object compatible with that passed in via this argument. */
     like?: ArrayLike;
-  }
+  },
 ): ndarray {
   const array = np.zeros(shape, ...kwargs(options));
   return new ndarray(array);
@@ -53,7 +53,7 @@ export function empty(
     order?: "C" | "F";
     /** Reference object to allow the creation of arrays which are not NumPy arrays. If an array-like passed in as like supports the `__array_function__` protocol, the result will be defined by it. In this case, it ensures the creation of an array object compatible with that passed in via this argument. */
     like?: ArrayLike;
-  }
+  },
 ): ndarray {
   const array = np.empty(shape, ...kwargs(options));
   return new ndarray(array);
@@ -77,36 +77,36 @@ export function arange(
   step: number,
   options?: {
     dtype?: DataType;
-  }
+  },
 ): ndarray;
 export function arange(
   stop: number,
   options?: {
     dtype?: DataType;
-  }
+  },
 ): ndarray;
 export function arange(
   start: number,
   stop: number,
   options?: {
     dtype?: DataType;
-  }
+  },
 ): ndarray;
 export function arange(
   start: number,
   stop?:
     | number
     | {
-        dtype?: DataType;
-      },
+      dtype?: DataType;
+    },
   step?:
     | number
     | {
-        dtype?: DataType;
-      },
+      dtype?: DataType;
+    },
   options?: {
     dtype?: DataType;
-  }
+  },
 ): ndarray {
   if (typeof stop === "number" && typeof step === "number") {
     return new ndarray(np.arange(start, stop, step, ...kwargs(options)));
@@ -142,7 +142,7 @@ export function linspace(
     dtype?: DataType;
     /** The axis in the result to store the samples. Relevant only if start or stop are array-like. By default (0), the samples will be along a new axis inserted at the beginning. Use -1 to get an axis at the end. */
     axis?: number;
-  }
+  },
 ): ndarray {
   return new ndarray(np.linspace(start, stop, ...kwargs(options)));
 }

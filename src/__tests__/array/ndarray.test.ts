@@ -65,7 +65,7 @@ Deno.test("ndarray.copy", () => {
       [1, 2, 3],
       [4, 5, 6],
     ],
-    { order: "F" }
+    { order: "F" },
   );
   const y = x.copy();
   x.fill(0);
@@ -110,7 +110,7 @@ Deno.test("ndarray.resize", () => {
       [0, 1],
       [2, 3],
     ],
-    { order: "C" }
+    { order: "C" },
   );
   a.resize([2, 1]);
   assertEquals(a.toList(), [[0], [1]]);
@@ -120,7 +120,7 @@ Deno.test("ndarray.resize", () => {
       [0, 1],
       [2, 3],
     ],
-    { order: "F" }
+    { order: "F" },
   );
   a.resize([2, 1]);
   assertEquals(a.toList(), [[0], [2]]);
@@ -167,7 +167,7 @@ Deno.test("ndarray.take", () => {
     [
       [4, 3],
       [5, 7],
-    ]
+    ],
   );
 });
 

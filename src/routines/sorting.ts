@@ -8,14 +8,7 @@ export function where(
   x?: ArrayLike,
   y?: ArrayLike,
 ): ndarray {
-  const broadcasts = [x, y]
-    .filter(Boolean)
-    .map((x) => (x instanceof ndarray ? x.array : x));
+  const broadcasts = [x, y].filter(Boolean);
 
-  return new ndarray(
-    np.where(
-      condition instanceof ndarray ? condition.array : condition,
-      ...broadcasts,
-    ),
-  );
+  return new ndarray(np.where(condition, ...broadcasts));
 }
